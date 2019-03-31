@@ -1,5 +1,5 @@
 /*
- * noVNC: HTML5 VNC client
+0;256;0c * noVNC: HTML5 VNC client
  * Copyright (C) 2018 The noVNC Authors
  * Licensed under MPL 2.0 (see LICENSE.txt)
  *
@@ -100,7 +100,7 @@ const UI = {
 
         document.documentElement.classList.remove("noVNC_loading");
 
-        let autoconnect = WebUtil.getConfigVar('autoconnect', false);
+        let autoconnect = WebUtil.getConfigVar('autoconnect', true);
         if (autoconnect === 'true' || autoconnect == '1') {
             autoconnect = true;
             UI.connect();
@@ -156,14 +156,15 @@ const UI = {
         UI.initSetting('port', port);
         UI.initSetting('encrypt', (window.location.protocol === "https:"));
         UI.initSetting('view_clip', false);
-        UI.initSetting('resize', 'off');
+        UI.initSetting('resize', 'scale');
         UI.initSetting('shared', true);
         UI.initSetting('view_only', false);
         UI.initSetting('show_dot', false);
         UI.initSetting('path', 'websockify');
         UI.initSetting('repeaterID', '');
-        UI.initSetting('reconnect', false);
-        UI.initSetting('reconnect_delay', 5000);
+        UI.initSetting('reconnect', true);
+        UI.initSetting('reconnect_delay', 0);
+        UI.initSetting('controlbar_pos', 'right');
 
         UI.setupSettingLabels();
     },
@@ -1160,15 +1161,10 @@ const UI = {
 
         UI.updateVisualState('connecting');
 
-        let url;
-
-        url = UI.getSetting('encrypt') ? 'wss' : 'ws';
-
-        url += '://' + host;
-        if (port) {
-            url += ':' + port;
-        }
-        url += '/' + path;
+        // Make the websockify path match the http path,
+        // replacing 'vnc.html' with 'websockify'.
+        let url = new URL(path, window.location.href);
+        url.protocol = UI.getSetting('encrypt') ? 'wss' : 'ws';
 
         UI.rfb = new RFB(document.getElementById('noVNC_container'), url,
                          { shared: UI.getSetting('shared'),
