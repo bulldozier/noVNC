@@ -64,6 +64,8 @@ query string. Currently the following options are available:
 * `show_dot` - If a dot cursor should be shown when the remote server provides
   no local cursor, or provides a fully-transparent (invisible) cursor.
 
+* `controlbar_pos` - The position of the control bar. Can be `left` or `right`.
+
 * `logging` - The console log level. Can be one of `error`, `warn`, `info` or
   `debug`.
 
